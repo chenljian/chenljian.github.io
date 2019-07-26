@@ -1,0 +1,310 @@
+---
+layout:     post
+title:      "Spark RDD 操作总结"
+subtitle:   " \"\""
+date:       2019-07-26 17:00:01
+author:     "Chen"
+header-img: "img/post-default-header.jpg"
+catalog: true
+tags:
+    - 编程
+---
+
+> “对 *Learning Spark：Lightning-fast Data Analysis* 一书中列出的一些RDD操作进行了总结 ”
+
+
+
+# **一．基本的RDD（第三章）**
+
+## **单个RDD转化操作**
+
+数据：｛1，2，3，3｝
+
+- 函数名 : map()
+- 目 的 ：将函数应用于RDD中的每个元素，将返回值构成新的RDD
+- 示 例 ：rdd.map(x => x+1)
+- 结 果 ：{2,3,4,4}
+
+
+
+- 函数名 : flatMap()
+- 目 的 ：将函数应用于RDD中的每个元素，将返回的迭代器的所有内容构成新的RDD。通常用来分切单词，执行扁平化操作。
+- 示 例 ：rdd.flatMap(x => x.to(3))
+- 结 果 ：{1,2,3,2,3,3,3}
+
+
+
+- 函数名 : filter()
+- 目 的 ：返回一个由通过传给filter()的函数的元素组成的RDD
+- 示 例 ：rdd.filter(x => x!=1)
+- 结 果 ：{2,3,3}
+
+
+
+- 函数名 : distinct()
+- 目 的 ：去重，需要数据混洗（shuffle）
+- 示 例 ：rdd.distinct()
+- 结 果 ：{1,2,3}
+
+
+
+- 函数名 : sample(withReplacement,fraction,[seed])
+- 目 的 ：对RDD采样，以及是否替换
+- 示 例 ：rdd.sample(false,0.5)
+- 结 果 ：{1,2,3} 非确定的
+
+
+
+## **多个RDD转化操作**
+
+数据：｛1，2，3｝ 和｛3，4，5｝
+
+- 函数名 : union
+- 目 的 ：生成一个包含两个RDD中所有元素的RDD (不去重的并集)
+- 示 例 ：rdd.union(other)
+- 结 果 ：{1,2,3,3,4,5}
+
+
+
+- 函数名 : intersection()
+- 目 的 ：求两个RDD共同的元素的RDD (交集)
+- 示 例 ： rdd.intersection(other)
+- 结 果 ： {3}
+
+
+
+- 函数名 : subtract()
+- 目 的 ： 求移除一个RDD中的内容 (差集)
+- 示 例 ： rdd.subtract(other)
+- 结 果 ：{1,2}
+
+
+
+- 函数名 : cartesian()
+- 目 的 ：笛卡尔积
+- 示 例 ：rdd.cartesian(other)
+- 结 果 ：{(1,3),(1,4),...,(3,5)}
+
+
+
+## **单个RDD行动操作**
+
+数据：｛1，2，3，3｝
+
+- 函数名 : collect()
+- 目 的 ：返回RDD中的所有元素
+- 示 例 ：rdd.collect()
+- 结 果 ：{1,2,3,3}
+
+
+
+- 函数名 : count()
+- 目 的 ：RDD中元素的个数
+- 示 例 ：rdd.count()
+- 结 果 ：4
+
+
+
+- 函数名 : countByValue()
+- 目 的 ：各元素在RDD中出现的次数
+- 示 例 ：rdd.countByValue()
+- 结 果 ：{(1,1),(2,1),(3,2)}
+
+
+
+- 函数名 : take(num)
+- 目 的 ：从RDD中返回num个元素
+- 示 例 ：rdd.take(2)
+- 结 果 ：{1,2}
+
+
+
+- 函数名 : top(num)
+- 目 的 ：从RDD中返回最前面的num个元素
+- 示 例 ：rdd.top(2)
+- 结 果 ：{3,3}
+
+
+
+- 函数名 : takeOrdered(num)(ordering)
+- 目 的 ：从RDD中按照提供的顺序返回最前面的num个元素
+- 示 例 ：rdd.takeOrdered(2)(myOrdering)
+- 结 果 ：{3,3}
+
+
+
+- 函数名 : takeSampe(withReplacement, num, [seed])
+- 目 的 ：从RDD中返回任意一些元素
+- 示 例 ：rdd.takeSample(false,1)
+- 结 果 ：uncertain
+
+
+
+- 函数名 : reduce(func)
+- 目 的 ：并行整合RDD中所有数据
+- 示 例 ：rdd.reduce((x,y) => x+y)
+- 结 果 ：9
+
+
+
+- 函数名 : fold(zero)(func)
+- 目 的 ：和reduce一样，但是需要提供初始值
+- 示 例 ：rdd.fold(0)((x,y) => x+y)
+- 结 果 ：9
+
+
+
+- 函数名 : aggregate(zeroValue)(seqOp, comOp)
+- 目 的 ：和reduce相似，但是通常返回不同类型的函数
+- 示 例 ：rdd.aggregate((0,0)) ((x,y)=> (x._1+x,x._2+1) ,(x,y) => (x._1+y._1,x._2+y._2))
+- 结 果 ：(9,4)
+
+
+
+- 函数名 : foreach(func)
+- 目 的 ：对RDD中的每个元素使用给定的函数
+- 示 例 ：rdd.foreach(func)
+- 结 果 ：无
+
+
+
+# **二. 键值对RDD（第四章）**
+
+## **Pair RDD转化**
+
+数据：{(1,2),(3,4),(3,6)}
+
+- 函数名 : reduceByKey(func)
+- 目 的 ：合并具有相同键的值
+- 示 例 ：rdd.reduceByKey((x,y) => x+y)
+- 结 果 ：{(1,2),(3,10)}
+
+
+
+- 函数名 : groupByKey()
+- 目 的 ：对具有相同键的值进行分组
+- 示 例 ：rdd.groupByKey()
+- 结 果 ：{(1,[2]),(3,[4,6])}
+
+
+
+- 函数名 : combineByKey(createCombiner,mergeValue,mergeCombiners,partitioner)
+- 目 的 ：使用不同的返回类型合并具有相同键的值
+- 示 例 ：rdd.combineByKey((lambda x: (x, 1)), (lambda x, y:(x[0]+y, x[1] +1)), (lambda x, y: (x[0]+y[0], x[1]+y[1])))
+- 结 果 ：{(1, 1),(6, 10)}
+
+
+
+- 函数名 : mapValues(func)
+- 目 的 ：对pair RDD中的每个值应用一个函数而不改变键
+- 示 例 ：rdd.mapValues(x => x+1)
+- 结 果 ：{(1,3),(3,5),(3,7)}
+
+
+
+- 函数名 : flatMapValues(func)
+- 目 的 ：对pair RDD中的每个值应用一个返回迭代器的函数，然后对返回的每个元素都生成一个对应原键的键值对记录。通常用于符号化
+- 示 例 ：rdd.flatMapValues(x => (x to 5))
+- 结 果 ：{(1,2),(1,3),(1,4),(1,5),(3,4),(3,5)}
+
+
+
+- 函数名 : keys()
+- 目 的 ：返回一个仅包含键的RDD
+- 示 例 ：rdd.keys()
+- 结 果 ：{1,3,3}
+
+
+
+- 函数名 : values()
+- 目 的 ：返回一个仅包含值的RDD
+- 示 例 ：rdd.values()
+- 结 果 ：{2,4,6}
+
+
+
+- 函数名 : sortByKey()
+- 目 的 ：返回一个根据键排序的RDD
+- 示 例 ：rdd.sortByKey()
+- 结 果 ：{(1,2),(3,4),(3,6)}
+
+
+
+## **两个Pair RDD的转化操作**
+
+数据：rdd={(1,2),(3,4),(3,6)},other={(3,9)}
+
+- 函数名 : subtractByKey()
+- 目 的 ：删掉RDD中键与otherRDD中的键相同的元素(差集)
+- 示 例 ：rdd.subtractByKey(other)
+- 结 果 ：{(1,2)}
+
+
+
+- 函数名 : join()
+- 目 的 ：对两个rdd进行内连接
+- 示 例 ：rdd.join(other)
+- 结 果 ：{(3,(4,9)),(3,(6,9))}
+
+
+
+- 函数名 : rightOuterJoin()
+- 目 的 ：对两个RDD进行连接操作，以右边的为主，右外连接
+- 示 例 ：rdd.rightOuterJoin(other)
+- 结 果 ：{(3,(Some(4),9)),(3,(Some(6),9))}
+
+
+
+- 函数名 : leftOuterJoin()
+- 目 的 ：对两个RDD进行左外连接，以左边的为主
+- 示 例 ：rdd.leftOuterJoin(other)
+- 结 果 ：{(1,(2,None)),(3,(4,Some(9)),(3,(6,Some(9))}
+
+
+
+- 函数名 : cogroup()
+- 目 的 ：将两个RDD中拥有相同键的数据分组到一起
+- 示 例 ：rdd.cogroup(other)
+- 结 果 ：{(1,([2],[])),(3,([4,6])),([4,6],[9])}
+
+## **Pair RDD行动操作**
+
+数据：｛（1，2），（3，4），（3，6）｝
+
+- 函数名 : reduceByKey(func)
+- 目 的 ：对每个键对应的元素分别计数
+- 示 例 ：rdd.countByKey()
+- 结 果 ：{(1,1),(3,2)}
+
+
+
+- 函数名 : collectAsMap()
+- 目 的 ：将结果以映射的形式返回，以便查询
+- 示 例 ：rdd.collectAsMap()
+- 结 果 ：Map{(1,2),(3,4),(3,6)}
+
+
+
+- 函数名 : lookup(key)
+- 目 的 ：返回给定键对应的所有值
+- 示 例 ：rdd.lookup(3)
+- 结 果 ：[4,6]
+
+
+
+# **三. 会为结果RDD设好分区的操作**
+
+- cogroup()
+- groupWith()
+- join()
+- leftOuterJoin()
+- rightOuterJoin()
+- groupByKey()
+- reduceByKey()
+- combineByKey()
+- partitionBy()
+- sort()
+- mapValues()（如果父RDD有分区的话）
+- flatMapValues()（如果父RDD有分区的话）
+
+

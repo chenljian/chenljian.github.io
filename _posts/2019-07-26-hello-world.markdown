@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Hello Word"
+title:      "Hello World"
 subtitle:   " \"Hello World, Hello Blog\""
 date:       2019-07-26 15:00:01
 author:     "Chen"
