@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "Spark RDD 操作总结"
-subtitle:   " \"\""
 date:       2019-07-26 17:00:01
 author:     "Chen"
 header-img: "img/post-default-header.jpg"
@@ -10,9 +9,7 @@ tags:
     - 编程
 ---
 
-> “对 *Learning Spark：Lightning-fast Data Analysis* 一书中列出的一些RDD操作进行了总结 ”
-
-
+对 *Learning Spark：Lightning-fast Data Analysis* 一书中列出的一些RDD操作进行了总结
 
 # **一．基本的RDD（第三章）**
 
