@@ -1,0 +1,23 @@
+---
+layout:     post
+title:      "Qt+VS调试时打开命令行窗口"
+subtitle:   "VS编写Qt程序时，如何打开命令行窗口"
+date:       2019-07-29 15:00:01
+author:     "Chen"
+header-img: "img/post-default-header.jpg"
+catalog: true
+tags:
+    - 编程
+---
+
+> “一个冷静的头脑是最好的调试器 ”
+
+在用 Visual Studio 编写Qt程序时，有时候调试需要打开cmd窗口查看输出什么的
+
+那么就在**工程属性->链接器->系统->子系统**中切换为**控制台(/SUBSYSTEM:CONSOLE)**
+
+如果需要关闭cmd窗口则将其设置为**窗口(SUBSYSTEM:WINDOWS)**
+
+—— Chen
+
+
