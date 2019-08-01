@@ -1,8 +1,8 @@
 ---
 layout:     post
 title:      "RAID5详解"
-subtitle:   " RAID5比RAID4的改进之处“
-date:       2019-08-01 15:00:01
+subtitle:   "RAID5比RAID4的改进之处“
+date:       2019-08-01 12:00:01
 author:     "Chen"
 header-img: "img/post-default-header.jpg"
 catalog: true
