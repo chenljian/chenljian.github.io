@@ -1,8 +1,8 @@
 ---
 layout:     post
-title:      "RAID5 详解"
-subtitle:   "RAID5比RAID4的改进之处“
-date:       2019-08-01 12:00:01
+title:      "RAID5详解"
+subtitle:   "RAID5与RAID4的区别"
+date:       2019-08-01 11:00:01
 author:     "Chen"
 header-img: "img/post-default-header.jpg"
 catalog: true
@@ -10,9 +10,7 @@ tags:
     - 数据库
 ---
 
-> “每当你觉得想要批评什么人的时候，你切要记着，这个世界上的人并非所有人都具备你禀有的条件”
-
-
+> “每当你觉得想要批评什么人的时候，你切要记着，这个世界上的人并非所有人都具备你禀有的条件 ”
 
 RAID 全称为 Redundant Arrays of Independent Disks，从level 0 开始，每个level代表不一样的磁盘阵列存储方法。下面简单介绍level 5，主要参考的是Hector Garcia-Molina和Jeffrey D.Ullman所著的《Database System Implementation》Second Edition。
 
