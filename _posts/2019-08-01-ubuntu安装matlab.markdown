@@ -10,10 +10,6 @@ tags:
     - Linux
 ---
 
-> ```
-> 
-> ```
->
 > “That's the beauty of music. They can't take that away from you. ”
 
 
