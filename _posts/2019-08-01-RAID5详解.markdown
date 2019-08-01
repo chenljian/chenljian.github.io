@@ -10,7 +10,7 @@ tags:
     - 数据库
 ---
 
-> “每当你觉得想要批评什么人的时候，你切要记着，这个世界上的人并非所有人都具备你禀有的条件 ”
+> “每当你想要批评什么人的时候，你要记着，这个世界上的人不是所有人都具备你禀有的条件 ”
 
 RAID 全称为 Redundant Arrays of Independent Disks，从level 0 开始，每个level代表不一样的磁盘阵列存储方法。下面简单介绍level 5，主要参考的是Hector Garcia-Molina和Jeffrey D.Ullman所著的《Database System Implementation》Second Edition。
 
