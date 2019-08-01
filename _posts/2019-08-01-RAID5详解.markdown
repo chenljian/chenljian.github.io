@@ -1,0 +1,28 @@
+---
+layout:     post
+title:      "RAID5详解"
+subtitle:   " RAID5比RAID4的改进之处“
+date:       2019-08-01 15:00:01
+author:     "Chen"
+header-img: "img/post-default-header.jpg"
+catalog: true
+tags:
+    - 数据库
+---
+
+> “每当你觉得想要批评什么人的时候，你切要记着，这个世界上的人并非所有人都具备你禀有的条件。”
+
+
+<p id = "build"></p>
+RAID 全称为 Redundant Arrays of Independent Disks，从level 0 开始，每个level代表不一样的磁盘阵列存储方法。下面简单介绍level 5，主要参考的是Hector Garcia-Molina和Jeffrey D.Ullman所著的《Database System Implementation》Second Edition。
+提出RAID 5的初衷是为了解决RAID 4对Redundant disk过多的读写操作，因为在RAID 4中，每次写一个Block，都需要对Redundant Disk进行一次读和一次写操作。这样会使Redundant Disk的负载过重。
+所以在RAID 5中，不单独设立一个Redundant Disk来存储奇偶校验和。而是把奇偶校验和分布在每个磁盘中。
+那么怎么分布呢？很简单，如果这里有 n+1 个磁盘，编号为0~n,那么对于第j个磁盘，如果 i 除以 n+1 的余数是 j ，那么j磁盘的第 i 个柱面（cylinder）就专门用于存储奇偶校验信息。
+举个例子：假如n=3即有4个磁盘，那么编号0的磁盘的第4,8,12,……柱面便用于存储校验信息，因为4,8,12,……除以4都等于该磁盘的编号–0，那么编号为1的磁盘的1,5,9，……柱面也将用于存储校验信息，以此类推。
+下面说一说这样设计的好处，以上面的例子为说明，假设每个磁盘上的每个块（block）的读写概率相同，如果现在来了一个写block操作，那么对于任意一个磁盘，那个block刚好位于该磁盘中的概率是1/4，如果不是，那么它又有1/3的概率那个块的校验和在这个磁盘上，所以对于磁盘阵列的每一个写操作，每个磁盘都有1/4+(3/4)*(1/3)=1/2的概率需要执行一次写操作，这样负载就均衡了。
+
+
+
+—— Chen
+
+
