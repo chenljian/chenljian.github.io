@@ -21,14 +21,15 @@ vector 是c++程序员最常用的容器，但是最近在用vector的erase()函
 
 所以找到了SGI STL的实现源码，内容很简单：
 
-``// 清除某个位置上的元素`
+`// 清除某个位置上的元素`
+
 `iterator erase(iterator __position) {
 	if (__position + 1 != end())`
-		`copy(__position + 1, _M_finish, __position); // 全局函数`
-	`--_M_finish;
-	destroy(_M_finish);`
-	`return __position;`
-``}```
+
+​		`copy(__position + 1, _M_finish, __position); // 全局函数--_M_finish;
+​	destroy(_M_finish);`
+
+`return __position;}`````
 
 但是真正的问题来了：erase()里面为什么调用destroy()去析构最后一个元素(M_finish)，而不是析构__position这个位置的元素？
 
@@ -42,40 +43,40 @@ A0~A3分别代表一个类的四个对象，那么当 erase(pos)时，会调用A
 
 简单写了一个测试程序，如下：
 
-`#include <iostream>
-#include <vector>
-using namespace std;
-class A {
-public:
-	A(int x) : value(x) {}
-	A(const A &a) {
-		value = a.value;
-		cout << "拷贝构造函数" << value << endl;
-	}
-	A& operator=(const A& a) {
-		value = a.value;
-		cout << "赋值构造函数" << value << endl;
-		return *this;
-	}
-	~A() {
-		cout << "调用析构函数" << value <<endl;
-	}
-private:
-	int value = 0;
-};
-int main()
-{
-	vector<A> vec;
-	//vec.reserve(4);
-	A a(1), b(2), c(3);
-	vec.push_back(a);
-	vec.push_back(b);
-	vec.push_back(c);
-	cout << "--------------------" << endl;
-	vec.erase(vec.begin());
-	system("pause");
-	return 0;
-}`
+`#include <iostream>`
+`#include <vector>`
+`using namespace std;`
+`class A {`
+`public:`
+	`A(int x) : value(x) {}`
+	`A(const A &a) {`
+		`value = a.value;`
+		`cout << "拷贝构造函数" << value << endl;`
+	`}`
+	`A& operator=(const A& a) {`
+		`value = a.value;`
+		`cout << "赋值构造函数" << value << endl;`
+		`return *this;`
+	`}`
+	`~A() {`
+		`cout << "调用析构函数" << value <<endl;`
+	`}`
+`private:`
+	`int value = 0;`
+`};`
+`int main()`
+`{`
+	`vector<A> vec;`
+	`//vec.reserve(4);`
+	`A a(1), b(2), c(3);`
+	`vec.push_back(a);`
+	`vec.push_back(b);`
+	`vec.push_back(c);`
+	`cout << "--------------------" << endl;`
+	`vec.erase(vec.begin());`
+	`system("pause");`
+	`return 0;`
+`}`
 
 结果如下：
 
