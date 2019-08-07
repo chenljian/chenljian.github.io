@@ -20,7 +20,7 @@ And write some interesting program
 
 I like reading and swimming
 
-welcome!
+Welcome!
 
 ——Chen Liang jian
 
