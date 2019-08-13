@@ -1,0 +1,70 @@
+---
+layout:     post
+title:      "Qt子线程修改主线程的UI"
+subtitle:   "Qt编程时，子线程如何修改主线程的UI"
+date:       2019-08-13 09:00:01
+author:     "Chen"
+header-img: "img/post-default-header.jpg"
+catalog: true
+tags:
+    - 编程
+---
+
+> “只有在你工作堆积如山时，你才可能享受闲暇 ”
+
+
+
+一般来讲，在图形界面编程中都需要创建子线程来处理任务，留着主线程来管理界面。否则在处理任务过程中，界面将无法相应用户的操作。但是大多数图形界面编程都不允许子线程直接去更新UI界面，因为容易导致死锁等问题。
+
+例如QT编程，假如子线程调用 postEvent 类型的接口，则没有问题。但是如果调用 sentEvent类型的接口，则会导致程序崩溃，并显示如下错误信息：
+
+```
+ASSERT failure in QCoreApplication::sendEvent: "Cannot send events to objects owned by a different thread.
+```
+
+那么怎么让子线程去修改主线程管理的UI界面呢？答案是采用signal/slot 机制。
+
+signal/slot机制在用户界面编程中很常见，例如设定用户按下界面中某个按钮时调用某个函数：
+
+```
+connect(ui.openBtn, SIGNAL(clicked()),this ,SLOT(OpenFile()));
+```
+
+这个机制也可以设定某个子线程发送一个信号时，主线程调用什么函数，或者界面采取什么措施：
+
+```
+connect(&prothread, SIGNAL(updateBar(double)), this, SLOT(SetProcessBarValue(double)));
+
+connect(&prothread, SIGNAL(updateBar(int)), ui->processBar, SLOT(setValue(int)));
+```
+
+所以说这是一个很强大的机制，不仅可以安排我（主线程）让子线程做什么，也可以安排子线程让我做什么。
+
+那么子线程怎么发送信号呢，首先在Thread类中定义信号：
+
+```
+signals:
+	void updateBar(double value);
+```
+
+在需要的时候发送信号即可：
+
+```
+emit updateBar(value);
+```
+
+具体代码示例可以参见博客：https://blog.csdn.net/zhangss415/article/details/7901223
+
+需要注意的是每个信号定义前都需要标识
+
+```
+signals:
+```
+
+
+
+
+<p id = "build"></p>
+—— Chen
+
+
