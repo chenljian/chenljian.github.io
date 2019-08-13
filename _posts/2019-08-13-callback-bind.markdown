@@ -45,26 +45,16 @@ bfunc2(this, x)
 
 ```c++
 #include <iostream>
-
 using namespace std;
-
 using namespace std::placeholders;	//占位符_1的namespace
-
 typedef function<void(int)> funcInt;
-
 class B{
-
 public:
-
     void PrintTwoInt(int x, int y);
-
     void bfunc(){
-
-    ​	funcInt printOneInt = bind(&B::PrintTwoInt, this, 0, _1);
+    	funcInt printOneInt = bind(&B::PrintTwoInt, this, 0, _1);
         printOneInt(1);
-
     }
-
 };
 ```
 
